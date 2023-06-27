@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tests</title>
+</head>
+<body>
+  <h1>Tests</h1>
+
+  <?php
+  // Connect to the database (replace 'hostname', 'username', 'password', and 'database' with your database credentials)
+  $conn = mysqli_connect('hostname', 'username', 'password', 'database');
+  if (!$conn) {
+    die('Connection failed: ' . mysqli_connect_error());
+  }
+
+  // Fetch the tests for the enrolled courses from the database (replace 'tests' and 'enrollments' with your table names and adjust the query as needed)
+  $query = "SELECT t.test_id, t.course_id, t.title, t.date FROM tests t
+            INNER JOIN enrollments e ON t.course_id = e.course_id
+            WHERE e.student_id = 'current_student_id'";
+  $result = mysqli_query($conn, $query);
+
+  if (mysqli_num_rows($result) > 0) {
+    // Iterate through each row of the result
+    while ($row = mysqli_fetch_assoc($result)) {
+      $testId = $row['test_id'];
+      $courseId = $row['course_id'];
+      $title = $row['title'];
+      $date = $row['date'];
+
+      // Display the test information
+      echo '<h2>' . $title . '</h2>';
+      echo '<p>Date: ' . $date . '</p>';
+      echo '<a href="take_test.php?testId=' . $testId . '&courseId=' . $courseId . '">Take Test</a>';
+    }
+  } else {
+    echo 'No tests found.';
+  }
+
+  // Close the database connection
+  mysqli_close($conn);
+  ?>
+
+</body>
+</html>

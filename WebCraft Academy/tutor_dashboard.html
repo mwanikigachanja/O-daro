@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tutor Dashboard</title>
+  <!-- Add Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    /* Custom CSS for dashboard layout */
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-gap: 20px;
+    }
+    .card {
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Tutor Dashboard</h1>
+
+  <div class="dashboard">
+    <div class="card">
+      <h2>Upload Course Content</h2>
+      <?php
+      // Connect to the database and fetch tutor's courses (replace 'hostname', 'username', 'password', and 'database' with your database credentials and adjust the query)
+      $conn = mysqli_connect('hostname', 'username', 'password', 'database');
+      if (!$conn) {
+        die('Connection failed: ' . mysqli_connect_error());
+      }
+      $query = "SELECT course_id, title FROM courses WHERE tutor_id = 'current_tutor_id'";
+      $result = mysqli_query($conn, $query);
+
+      if (mysqli_num_rows($result) > 0) {
+        // Iterate through each course and display the upload link
+        while ($row = mysqli_fetch_assoc($result)) {
+          $courseId = $row['course_id'];
+          $title = $row['title'];
+
+          echo '<a href="upload_content.php?courseId=' . $courseId . '">Upload Content for ' . $title . '</a><br>';
+        }
+      } else {
+        echo 'No courses found.';
+      }
+
+      mysqli_close($conn);
+      ?>
+    </div>
+
+    <div class="card">
+      <h2>Students</h2>
+      <a href="student_records.php">View Academic Records</a>
+    </div>
+
+    <div class="card">
+      <h2>Tests</h2>
+      <a href="upload_tests.php">Upload Tests</a><br>
+      <a href="test_results.php">View Test Results</a>
+    </div>
+
+    <div class="card">
+      <h2>Profile Management</h2>
+      <a href="edit_profile.php">Edit Profile</a>
+    </div>
+  </div>
+
+  <!-- Add Bootstrap JS -->
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
